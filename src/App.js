@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Layout from "./components/Layout";
+import DeviceManagement from "./components/DeviceManagement";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './theme.css';
 
-function App() {
+const Dashboard = () => (
+  <div className="p-4">
+    <h2>Dashboard Overview</h2>
+    <p>Welcome to the License Tracker Dashboard.</p>
+  </div>
+);
+
+const Licenses = () => (
+  <div className="p-4">
+    <h2>Licenses</h2>
+    <p>Manage software and device licenses here.</p>
+  </div>
+);
+
+const Reports = () => (
+  <div className="p-4">
+    <h2>Reports</h2>
+    <p>Generate compliance and usage reports.</p>
+  </div>
+);
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/devices" element={<DeviceManagement />} />
+          <Route path="/licenses" element={<Licenses />} />
+          <Route path="/reports" element={<Reports />} />
+        </Routes>
+      </Layout>
+    </Router>
   );
 }
-
-export default App;
