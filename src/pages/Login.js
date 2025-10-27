@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axiosInstance from "../api/axios";
+import axiosInstance from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -19,11 +19,8 @@ const Login = () => {
       const res = await axiosInstance.post("/login", formData);
       const { token, redirectUrl } = res.data;
 
-      // Save JWT token
       localStorage.setItem("token", token);
-
-      // Redirect based on role
-      window.location.href = redirectUrl; // redirect to microservice URL
+      window.location.href = redirectUrl;
     } catch (err) {
       setError(err.response?.data || "Login failed");
     }

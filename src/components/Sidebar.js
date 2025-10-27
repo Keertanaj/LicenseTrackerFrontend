@@ -7,7 +7,8 @@ const Sidebar = ({ isOpen, close }) => {
 
   const navItems = [
     { path: "/dashboard", label: "Dashboard" },
-    { path: "/devices", label: "Devices" }
+    { path: "/devices", label: "Devices" },
+    { path: "/licenses", label: "License Management" }
   ];
 
   return (
