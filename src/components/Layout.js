@@ -1,19 +1,16 @@
-import React, { useState } from "react";
-import Sidebar from "./Sidebar";
-import Topbar from "./Topbar";
+import React from "react";
+import TopNavbar from "./TopNavbar";
 
 const Layout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const toggleSidebar = () => setSidebarOpen(open => !open);
+  // We no longer need 'sidebarOpen' state or 'toggleSidebar' function
+  // since the sidebar is being removed.
 
   return (
-    <div className="app-shell d-flex">
-      <Sidebar isOpen={sidebarOpen} close={() => setSidebarOpen(false)} />
-      <div className="content-area flex-grow-1">
-        <Topbar toggleSidebar={toggleSidebar} />
-        <main className="main-content">{children}</main>
-      </div>
+    // The main container is simplified. Topbar handles the navigation.
+    <div className="app-shell"> 
+      <TopNavbar /> 
+      {/* Main content starts directly below the Topbar, taking full width */}
+      <main className="main-content p-3 p-md-4">{children}</main>
     </div>
   );
 };

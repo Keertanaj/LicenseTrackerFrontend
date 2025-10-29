@@ -36,6 +36,7 @@ export const deviceService = {
     searchDevices: (ipAddress, location) => api.get(`/devices/search`, {params: { ipAddress, location },}),
     getAllLocations: () => api.get('/devices/locations'),
     getAllIpAddresses: () => api.get('/devices/ipaddresses'),
+    getDeviceById: (deviceId) => api.get(`/devices/${deviceId}`)
 };
 
 export const licenseService = {
@@ -44,6 +45,14 @@ export const licenseService = {
   updateLicense: (key, data) => api.put(`/licenses/${key}`, data),
   deleteLicense: (key) => api.delete(`/licenses/${key}`),
   searchLicenses: (vendor, software) => api.get(`/licenses/search?vendor=${vendor}&software=${software}`)
+};
+
+export const assignmentService = {
+    assignLicense: (data) => api.post("/assignments/assignlicense", data),
+    getAssignmentsByDeviceId: (deviceId) => api.get(`/assignments/device/${deviceId}`),
+    getLicenseUsage: (licenseKey) => api.get(`/assignments/usage/${licenseKey}`),
+    unassignLicense: (assignmentId) => api.delete(`/assignments/${assignmentId}`),
+    getAssignmentsByLicenseKey: (licenseKey) => api.get(`/assignments/license/${licenseKey}`),
 };
 
 export default api;
