@@ -55,4 +55,10 @@ export const assignmentService = {
     getAssignmentsByLicenseKey: (licenseKey) => api.get(`/assignments/license/${licenseKey}`),
 };
 
+export const alertService = {
+    getExpiringAlerts: (days) => {
+      return api.get('/alerts', { params: { days }});
+    }
+};
+
 export default api;

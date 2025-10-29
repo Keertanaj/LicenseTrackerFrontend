@@ -4,19 +4,18 @@ import { Link, useLocation } from "react-router-dom";
 
 // The navigation items
 const navItems = [
-    { path: "/dashboard", label: "Dashboard", icon: '📊' },
-    { path: "/devices", label: "Devices", icon: '💻' },
-    { path: "/licenses", label: "License Management", icon: '🔑' }
+    { path: "/dashboard", label: "Dashboard"},
+    { path: "/devices", label: "Devices" },
+    { path: "/licenses", label: "License Management" },
+    { path: "/alerts", label: "Alerts" }
 ];
 
 const TopNavbar = () => {
     const location = useLocation();
     
-    // --- UPDATED COLORS ---
-    const PRIMARY_COLOR = '#343A40'; // Deep Charcoal for Navbar background (Replaces Clear Blue)
-    const ACTIVE_COLOR = '#83B366'; // Soft Green for active highlight (from your existing theme)
+    const PRIMARY_COLOR = '#343A40'; 
+    const ACTIVE_COLOR = '#83B366';
 
-    // Function to check if a navigation item is active
     const isActive = (path) => {
         if (path === "/dashboard") {
             return location.pathname === "/dashboard" || location.pathname === "/";
@@ -28,8 +27,8 @@ const TopNavbar = () => {
         <Navbar 
             expand="lg" 
             className="shadow-sm" 
-            style={{ backgroundColor: PRIMARY_COLOR }} // Set Deep Charcoal background
-            variant="dark" // Ensures text and toggle icon are white/light
+            style={{ backgroundColor: PRIMARY_COLOR }} 
+            variant="dark"
         >
             <Container fluid>
                 {/* 🛠️ Brand/Logo */}
@@ -38,7 +37,7 @@ const TopNavbar = () => {
                     to="/dashboard" 
                     style={{ color: 'white', fontWeight: 'bold' }}
                 >
-                    🛠️ Asset Tracker
+                    🛠️ License Tracker
                 </Navbar.Brand>
                 
                 <Navbar.Toggle aria-controls="main-navbar-nav" />
@@ -68,7 +67,6 @@ const TopNavbar = () => {
                                 placeholder="Search..." 
                                 size="sm" 
                                 className="me-2"
-                                // Use Soft Teal for the search input border to link back to your theme
                                 style={{ borderColor: '#B2DCE2' }} 
                             />
                         </Form>

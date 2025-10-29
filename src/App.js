@@ -5,6 +5,7 @@ import DeviceManagement from "./components/DeviceManagement";
 import LicenseManagement from "./components/LicenseManagement";
 import AuthPage from "./pages/AuthPage";
 import AssignLicenseModal from "./components/AssignLicenseModal";
+import Alerts from "./components/Alerts";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './theme.css';
 
@@ -38,6 +39,7 @@ const AppRoutes = () => {
             <Route path="/licenses" element={<LicenseManagement />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/assignments" element={<AssignLicenseModal />} />
+            <Route path="/alerts" element={<Alerts />} />
         </Routes>
     );
 

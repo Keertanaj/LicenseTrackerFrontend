@@ -112,7 +112,7 @@ const LicenseForm = ({ existingLicense, onClose }) => {
                     >
                         <option value="PER_DEVICE">PER_DEVICE</option>
                         <option value="PER_USER">PER_USER</option>
-                        <option value="PER_SERVER">PER_SERVER</option>
+                        <option value="ENTERPRISE">ENTERPRISE</option>
                     </Form.Select>
                 </Form.Group>
             </Col>
