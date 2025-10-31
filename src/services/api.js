@@ -44,8 +44,19 @@ export const licenseService = {
   addLicense: (data) => api.post("/licenses", data),
   updateLicense: (key, data) => api.put(`/licenses/${key}`, data),
   deleteLicense: (key) => api.delete(`/licenses/${key}`),
-  searchLicenses: (vendor, software) => api.get(`/licenses/search?vendor=${vendor}&software=${software}`)
+  searchLicenses: (vendorName, software) => api.get(`/licenses/search?vendor=${vendorName}&software=${software}`),
+  getAllVendors: () => api.get("/licenses/vendors"),
+  getAllSoftware: () => api.get("/licenses/software")
 };
+
+export const vendorService = {
+    getAllVendors: () => api.get("/vendors")
+};
+
+export const softwareService = {
+    getAllSoftwareNames: () => api.get("/software/names")
+};
+
 
 export const assignmentService = {
     assignLicense: (data) => api.post("/assignments/assignlicense", data),
@@ -59,6 +70,12 @@ export const alertService = {
     getExpiringAlerts: (days) => {
       return api.get('/alerts', { params: { days }});
     }
+};
+
+export const dashboardService = {
+  getMetrics: () => api.get("/dashboard/metrics"),
+  getExpiringLicenses: () => api.get("/dashboard/expiringlicenses"),
+  getDevicesAtRisk: (days) => api.get("/dashboard/devicesatrisk")
 };
 
 export default api;

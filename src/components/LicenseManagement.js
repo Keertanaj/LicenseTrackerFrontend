@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {Row,Col,Table,Button,Spinner,Alert,Breadcrumb,Form,Card,Dropdown} from "react-bootstrap";
 import LicenseForm from "./LicenseForm";
 import ViewAssignedDevicesModal from '../components/ViewAssignedDevicesModal'; // Import the new modal
-import { licenseService } from "../services/api";
+import { licenseService, vendorService } from "../services/api";
 
 const LicenseManagement = () => {
     const [licenses, setLicenses] = useState([]);
@@ -12,6 +12,8 @@ const LicenseManagement = () => {
     const [editingLicense, setEditingLicense] = useState(null);
     const [searchSoftware, setSearchSoftware] = useState("");
     const [searchVendor, setSearchVendor] = useState("");
+    const [allVendors, setAllVendors] = useState([]);
+    const [allSoftware, setAllSoftware] = useState([]);
     
     const [showDevicesModal, setShowDevicesModal] = useState(false);
     const [selectedLicenseForDevices, setSelectedLicenseForDevices] = useState(null);
@@ -38,8 +40,28 @@ const LicenseManagement = () => {
         }
     };
 
+    const loadVendors = async () => {
+        try {
+            const res = await vendorService.getAllVendors();
+            setAllVendors(res.data || []);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const loadSoftware = async () => {
+        try {
+            const res = await licenseService.getAllSoftware();
+            setAllSoftware(res.data || []);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     useEffect(() => {
         loadLicenses();
+        loadVendors();
+        loadSoftware();
     }, []);
 
     const handleSearch = async () => {
@@ -116,7 +138,7 @@ const LicenseManagement = () => {
                                 {status.text}
                             </span>
                         </Col>
-                        <Col xs={6}><strong>Vendor:</strong> {l.vendor}</Col>
+                        <Col xs={6}><strong>Vendor:</strong> {l.vendorName}</Col>
                         <Col xs={6}><strong>Type:</strong> {l.licenseType}</Col>
                         <Col xs={6}><strong>Valid From:</strong> {l.validFrom}</Col>
                         <Col xs={6}><strong>Valid To:</strong> {l.validTo}</Col>
@@ -189,21 +211,37 @@ const LicenseManagement = () => {
                     <Row className="g-2 g-md-3 align-items-end">
                         <Col xs={12} md={4}>
                             <Form.Label style={{ color: "white" }}>Filter by Vendor</Form.Label>
-                            <Form.Control
-                                placeholder="e.g., Microsoft"
-                                value={searchVendor}
-                                onChange={(e) => setSearchVendor(e.target.value)}
-                                style={{ borderColor: "white" }}
-                            />
+                            <Dropdown className="w-100">
+                                <Dropdown.Toggle 
+                                    className="w-100 text-start"
+                                    style={{ backgroundColor: 'white', color: 'black', borderColor: '#D7EAAC' }}
+                                >
+                                    {searchVendor || 'All Vendors'}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu className="w-100">
+                                    <Dropdown.Item onClick={() => setSearchVendor('')}>All Vendors</Dropdown.Item>
+                                    {allVendors.map((vendor) => (
+                                        <Dropdown.Item key={vendor.vendorId} onClick={() => setSearchVendor(vendor.vendorName)}>{vendor.vendorName}</Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </Col>
                         <Col xs={12} md={4}>
                             <Form.Label style={{ color: "white" }}>Filter by Software</Form.Label>
-                            <Form.Control
-                                placeholder="e.g., Windows OS"
-                                value={searchSoftware}
-                                onChange={(e) => setSearchSoftware(e.target.value)}
-                                style={{ borderColor: "white" }}
-                            />
+                            <Dropdown className="w-100">
+                                <Dropdown.Toggle 
+                                    className="w-100 text-start"
+                                    style={{ backgroundColor: 'white', color: 'black', borderColor: '#D7EAAC' }}
+                                >
+                                    {searchSoftware || 'All Software'}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu className="w-100">
+                                    <Dropdown.Item onClick={() => setSearchSoftware('')}>All Software</Dropdown.Item>
+                                    {allSoftware.map((software) => (
+                                        <Dropdown.Item key={software} onClick={() => setSearchSoftware(software)}>{software}</Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </Col>
                         <Col xs={12} md={4} className="d-flex gap-2 mt-4 mt-md-0">
                             <Button
@@ -263,7 +301,7 @@ const LicenseManagement = () => {
                                             return (
                                                 <tr key={l.licenseKey}>
                                                     <td style={{ fontWeight: "bold" }}>{l.licenseKey}</td>
-                                                    <td>{l.vendor}</td>
+                                                    <td>{l.vendorName}</td>
                                                     <td>{l.softwareName}</td>
                                                     <td>{l.licenseType}</td>
                                                     <td style={{ fontWeight: "bold" }}>{l.validTo}</td>

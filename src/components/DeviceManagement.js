@@ -28,6 +28,7 @@ const DeviceManagement = () => {
         loadDevices(); 
     };
 
+ 
     const loadDevices = async () => {
         setLoading(true);
         try {
@@ -69,10 +70,15 @@ const DeviceManagement = () => {
         setError(null);
         try {
             const res = await deviceService.searchDevices(searchIP, searchLocation);
-            setDevices(res.data || []);
+            if (res.data && res.data.length === 0) {
+                setError("No such devices");
+                setDevices([]);
+            } else {
+                setDevices(res.data || []);
+            }
         } catch (err) {
             console.error(err);
-            setError('Failed to search devices');
+            setError('YOOOHOO');
         } finally {
             setLoading(false);
         }
@@ -84,13 +90,24 @@ const DeviceManagement = () => {
         loadDevices();
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this device? This action cannot be undone.')) return;
+    const handleDelete = async (device) => {
+        // Frontend check before making the API call
+        if (device.status !== 'DECOMMISSIONED') {
+            alert('Device must be DECOMMISSIONED before deletion. Please update the status first.');
+            return; // Stop the function
+        }
+
+        if (!window.confirm('Are you sure you want to delete this decommissioned device? This action cannot be undone.')) {
+            return;
+        }
+
         try {
-            await deviceService.deleteDevice(id);
-            loadDevices();
+            await deviceService.deleteDevice(device.deviceId);
+            loadDevices(); // Refresh list on success
         } catch (err) {
-            alert(`Failed to delete device: ${err.message}`);
+            // This will now only catch unexpected server/network errors
+            console.error("Delete failed:", err);
+            alert(`Failed to delete device. An unexpected error occurred.`);
         }
     };
 
@@ -182,7 +199,7 @@ const DeviceManagement = () => {
                     ✏️ Edit
                 </Button>
                 <Button 
-                    onClick={() => handleDelete(d.deviceId)}
+                    onClick={() => handleDelete(d)}
                     style={{ ...actionButtonMobileStyle, backgroundColor: '#F3000E', borderColor: '#F3000E', color: 'white' }}
                 >
                     🗑️ Delete
@@ -334,7 +351,7 @@ const DeviceManagement = () => {
                                                         ✏️ Edit
                                                     </Button>
                                                     <Button 
-                                                        onClick={() => handleDelete(d.deviceId)}
+                                                        onClick={() => handleDelete(d)}
                                                         style={{ ...actionButtonStyle, backgroundColor: '#F3000E', borderColor: '#F3000E', color: 'white' }}
                                                         title="Delete Device"
                                                     >

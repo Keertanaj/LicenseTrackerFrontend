@@ -7,14 +7,7 @@ import AuthPage from "./pages/AuthPage";
 import AssignLicenseModal from "./components/AssignLicenseModal";
 import Alerts from "./components/Alerts";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './theme.css';
-
-const Dashboard = () => (
-  <div className="p-4">
-    <h2>Dashboard Overview</h2>
-    <p>Welcome to the License Tracker Dashboard.</p>
-  </div>
-);
+import Dashboard from "./components/Dashboard";
 
 const Reports = () => (
   <div className="p-4">

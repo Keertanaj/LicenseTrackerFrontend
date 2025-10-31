@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
-import { licenseService } from "../services/api";
+import { licenseService, vendorService, softwareService } from "../services/api";
 
 const LicenseForm = ({ existingLicense, onClose }) => {
   const isEdit = !!existingLicense;
   const [form, setForm] = useState({
     licenseKey: "",
-    vendor: "",
+    vendorId: "",
     softwareName: "",
     licenseType: "PER_DEVICE",
     validFrom: "",
@@ -14,16 +14,43 @@ const LicenseForm = ({ existingLicense, onClose }) => {
     maxUsage: "",
     notes: ""
   });
+  const [vendors, setVendors] = useState([]);
+  const [softwareNames, setSoftwareNames] = useState([]);
 
   useEffect(() => {
-    if (existingLicense) setForm(existingLicense);
-  }, [existingLicense]);
+    if (existingLicense) {
+        const vendorId = existingLicense.vendor ? existingLicense.vendor.vendorId : "";
+        setForm({ ...existingLicense, vendorId });
+    }
+
+    const fetchVendors = async () => {
+        try {
+            const res = await vendorService.getAllVendors();
+            setVendors(res.data || []);
+        } catch (err) {
+            console.error("Failed to fetch vendors", err);
+        }
+    };
+
+    const fetchSoftwareNames = async () => {
+        try {
+            const res = await softwareService.getAllSoftwareNames();
+            setSoftwareNames(res.data || []);
+        } catch (err) {
+            console.error("Failed to fetch software names", err);
+        }
+    };
+
+    fetchVendors();
+    fetchSoftwareNames();
+}, [existingLicense]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     console.log("Submitting form:", form);
 
     try {
@@ -77,13 +104,20 @@ const LicenseForm = ({ existingLicense, onClose }) => {
             <Col xs={12} md={isEdit ? 6 : 6}>
               <Form.Group className="mb-3">
                 <Form.Label className="fw-bold" style={{ color: LABEL_COLOR }}>Vendor</Form.Label>
-                <Form.Control
-                  name="vendor"
-                  value={form.vendor}
+                <Form.Select
+                  name="vendorId"
+                  value={form.vendorId}
                   onChange={handleChange}
                   style={{ borderColor: ACCENT_COLOR }}
                   required
-                />
+                >
+                    <option value="">Select a Vendor</option>
+                    {vendors.map((vendor) => (
+                        <option key={vendor.vendorId} value={vendor.vendorId}>
+                            {vendor.vendorName}
+                        </option>
+                    ))}
+                </Form.Select>
               </Form.Group>
             </Col>
           </Row>
@@ -92,13 +126,20 @@ const LicenseForm = ({ existingLicense, onClose }) => {
             <Col xs={12} md={6}>
                 <Form.Group className="mb-3">
                     <Form.Label className="fw-bold" style={{ color: LABEL_COLOR }}>Software Name</Form.Label>
-                    <Form.Control
+                    <Form.Select
                         name="softwareName"
                         value={form.softwareName}
                         onChange={handleChange}
                         style={{ borderColor: ACCENT_COLOR }}
                         required
-                    />
+                    >
+                        <option value="">Select Software</option>
+                        {softwareNames.map((name) => (
+                            <option key={name} value={name}>
+                                {name}
+                            </option>
+                        ))}
+                    </Form.Select>
                 </Form.Group>
             </Col>
             <Col xs={12} md={6}>
