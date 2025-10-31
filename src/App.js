@@ -8,14 +8,7 @@ import AssignLicenseModal from "./components/AssignLicenseModal";
 import Alerts from "./components/Alerts";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from "./components/Dashboard";
-
-const Reports = () => (
-  <div className="p-4">
-    <h2>Reports</h2>
-    <p>Generate compliance and usage reports.</p>
-  </div>
-);
-
+import Reports from "./pages/ReportsPage";
 const AppRoutes = () => {
     const location = useLocation();
     
@@ -33,6 +26,7 @@ const AppRoutes = () => {
             <Route path="/reports" element={<Reports />} />
             <Route path="/assignments" element={<AssignLicenseModal />} />
             <Route path="/alerts" element={<Alerts />} />
+            <Route path= "/reports" element={<Reports />} />
         </Routes>
     );
 

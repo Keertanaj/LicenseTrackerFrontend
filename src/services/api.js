@@ -77,5 +77,7 @@ export const dashboardService = {
   getExpiringLicenses: () => api.get("/dashboard/expiringlicenses"),
   getDevicesAtRisk: (days) => api.get("/dashboard/devicesatrisk")
 };
-
+export const reportService = {
+     getReport: (queryString) => api.get(`/reports/licenses?${queryString}`)
+}
 export default api;

@@ -7,7 +7,8 @@ const navItems = [
     { path: "/dashboard", label: "Dashboard"},
     { path: "/devices", label: "Devices" },
     { path: "/licenses", label: "License Management" },
-    { path: "/alerts", label: "Alerts" }
+    { path: "/alerts", label: "Alerts" },
+    { path: "/reports", label: "Reports"}
 ];
 
 const TopNavbar = () => {
