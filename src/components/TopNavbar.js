@@ -8,7 +8,9 @@ const navItems = [
     { path: "/devices", label: "Devices" },
     { path: "/licenses", label: "License Management" },
     { path: "/alerts", label: "Alerts" },
-    { path: "/reports", label: "Reports"}
+    { path: "/reports", label: "Reports"},
+    { path: "/users", label: "User Management" },
+    { path: "/auditlogs", label: "Audit Logs"}
 ];
 
 const TopNavbar = () => {

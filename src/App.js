@@ -9,6 +9,8 @@ import Alerts from "./components/Alerts";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from "./components/Dashboard";
 import Reports from "./pages/ReportsPage";
+import UserPage from "./pages/UserPage";
+import AuditLogPage from "./pages/AuditLogPage";
 const AppRoutes = () => {
     const location = useLocation();
     
@@ -27,6 +29,8 @@ const AppRoutes = () => {
             <Route path="/assignments" element={<AssignLicenseModal />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path= "/reports" element={<Reports />} />
+            <Route path= "/users" element={<UserPage />} />
+            <Route path= "/auditlogs" element={<AuditLogPage />} />
         </Routes>
     );
 

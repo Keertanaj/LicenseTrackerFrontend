@@ -22,9 +22,9 @@ api.interceptors.request.use(
   }
 );
 
-export const authService={
-  login: (data) => api.post('/api/auth/login', data),
-  signup: (data) => api.post('/api/auth/signup', data),
+export const authService = {
+    login: (data) => api.post('/api/auth/login', data),
+    signup: (data) => api.post('/api/auth/signup', data),
 }
 
 export const deviceService = {
@@ -40,13 +40,13 @@ export const deviceService = {
 };
 
 export const licenseService = {
-  getAllLicenses: () => api.get("/licenses"),
-  addLicense: (data) => api.post("/licenses", data),
-  updateLicense: (key, data) => api.put(`/licenses/${key}`, data),
-  deleteLicense: (key) => api.delete(`/licenses/${key}`),
-  searchLicenses: (vendorName, software) => api.get(`/licenses/search?vendor=${vendorName}&software=${software}`),
-  getAllVendors: () => api.get("/licenses/vendors"),
-  getAllSoftware: () => api.get("/licenses/software")
+    getAllLicenses: () => api.get("/licenses"),
+    addLicense: (data) => api.post("/licenses", data),
+    updateLicense: (key, data) => api.put(`/licenses/${key}`, data),
+    deleteLicense: (key) => api.delete(`/licenses/${key}`),
+    searchLicenses: (vendorName, software) => api.get(`/licenses/search?vendor=${vendorName}&software=${software}`),
+    getAllVendors: () => api.get("/licenses/vendors"),
+    getAllSoftware: () => api.get("/licenses/software")
 };
 
 export const vendorService = {
@@ -56,7 +56,6 @@ export const vendorService = {
 export const softwareService = {
     getAllSoftwareNames: () => api.get("/software/names")
 };
-
 
 export const assignmentService = {
     assignLicense: (data) => api.post("/assignments/assignlicense", data),
@@ -68,16 +67,33 @@ export const assignmentService = {
 
 export const alertService = {
     getExpiringAlerts: (days) => {
-      return api.get('/alerts', { params: { days }});
+        return api.get('/alerts', { params: { days }});
     }
 };
 
 export const dashboardService = {
-  getMetrics: () => api.get("/dashboard/metrics"),
-  getExpiringLicenses: () => api.get("/dashboard/expiringlicenses"),
-  getDevicesAtRisk: (days) => api.get("/dashboard/devicesatrisk")
+    getMetrics: () => api.get("/dashboard/metrics"),
+    getExpiringLicenses: () => api.get("/dashboard/expiringlicenses"),
+    getDevicesAtRisk: (days) => api.get("/dashboard/devicesatrisk")
 };
+
 export const reportService = {
-     getReport: (queryString) => api.get(`/reports/licenses?${queryString}`)
+    getReport: (queryString) => api.get(`/reports/licenses?${queryString}`)
 }
+
+export const userService = {
+    getUsers: () => api.get('/users'),
+    createUser: (data) => api.post('/users', data),
+    assignRole: (userId, data) => api.put(`/users/${userId}/role`, data),
+    deleteUser: (userId) => api.delete(`/users/${userId}`) 
+};
+
+export const auditLogService = {
+    getLogs: (filters) => api.get(`/auditlogs`, { params: filters }) 
+} 
+
+export const roleService = {
+    getRoles: () => api.get('/roles') 
+}
+
 export default api;
