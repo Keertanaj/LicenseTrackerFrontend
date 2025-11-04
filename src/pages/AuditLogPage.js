@@ -125,7 +125,6 @@ const AuditLogPage = () => {
             <Table striped bordered hover responsive>
                 <thead>
                     <tr>
-                        <th>Log ID</th>
                         <th>Timestamp</th>
                         <th>User ID</th>
                         <th>Action</th>
@@ -142,7 +141,6 @@ const AuditLogPage = () => {
                     ) : (
                         logs.map(log => (
                             <tr key={log.logId}>
-                                <td>{log.logId}</td>
                                 <td>{new Date(log.timestamp).toLocaleString()}</td>
                                 <td>{log.userId}</td>
                                 <td>{log.action}</td>

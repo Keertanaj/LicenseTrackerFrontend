@@ -11,6 +11,8 @@ import Dashboard from "./components/Dashboard";
 import Reports from "./pages/ReportsPage";
 import UserPage from "./pages/UserPage";
 import AuditLogPage from "./pages/AuditLogPage";
+import SoftwareManagement from "./pages/SoftwareManagement";
+import Vendors from "./pages/VendorManagement";
 const AppRoutes = () => {
     const location = useLocation();
     
@@ -31,6 +33,8 @@ const AppRoutes = () => {
             <Route path= "/reports" element={<Reports />} />
             <Route path= "/users" element={<UserPage />} />
             <Route path= "/auditlogs" element={<AuditLogPage />} />
+            <Route path= "/software" element={<SoftwareManagement />} />
+            <Route path= "/vendors" element={<Vendors />} />
         </Routes>
     );
 

@@ -120,7 +120,7 @@ const Dashboard = () => {
                                             <tr key={index}>
                                                 <td style={{ fontWeight: 'bold' }}>{item.softwareName}</td>
                                                 <td>{item.vendor}</td>
-                                                <td>{item.devicesUsed}</td> {/* Assuming devicesUsed is available in LicenseAlertDTO or calculated here */}
+                                                <td>{item.devicesAtRiskCountRes}</td> {/* Assuming devicesUsed is available in LicenseAlertDTO or calculated here */}
                                                 <td style={{ color: COLORS.warning, fontWeight: 'bold' }}>{item.validTo}</td>
                                             </tr>
                                         ))

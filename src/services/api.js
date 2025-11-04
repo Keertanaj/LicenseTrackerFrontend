@@ -50,11 +50,21 @@ export const licenseService = {
 };
 
 export const vendorService = {
-    getAllVendors: () => api.get("/vendors")
+    // GET all vendors (Read)
+    getAllVendors: () => api.get("/vendors"), 
+    // POST to add new vendor (Create)
+    addVendor: (data) => api.post("/vendors", data),
+    // PUT to update vendor by ID (Update)
+    updateVendor: (id, data) => api.put(`/vendors/${id}`, data),
+    // DELETE vendor by ID (Delete)
+    deleteVendor: (id) => api.delete(`/vendors/${id}`), 
 };
-
 export const softwareService = {
-    getAllSoftwareNames: () => api.get("/software/names")
+    
+    getAllSoftware: () => api.get("/software"),
+    addSoftware: (data) => api.post("/software", data),
+    updateSoftware: (id, data) => api.put(`/software/${id}`, data),
+    deleteSoftware: (id) => api.delete(`/software/${id}`)
 };
 
 export const assignmentService = {
@@ -95,5 +105,7 @@ export const auditLogService = {
 export const roleService = {
     getRoles: () => api.get('/roles') 
 }
+
+
 
 export default api;
