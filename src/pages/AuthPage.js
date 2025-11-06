@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap"; 
 import { authService } from "../services/api"; 
+import { Link, useNavigate } from "react-router-dom";
 
 const AuthPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -12,6 +13,7 @@ const AuthPage = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate  = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,16 +32,19 @@ const AuthPage = () => {
     setLoading(true);
 
     if (isLoginMode) {
-      // --- LOGIN LOGIC ---
       try {
         const loginData = { email: formData.email, password: formData.password };
         const res = await authService.login(loginData); 
         
-        const { token, redirectUrl } = res.data;
+        const { token, role } = res.data;
+      
         localStorage.setItem("token", token);
-        
-        // Navigate with full refresh
-        window.location.href = new URL(redirectUrl).pathname || '/dashboard';
+
+        if (role == "ROLE_ADMIN"){
+          navigate("/dashboard");
+        } else if (role == "ROLE_IT_AUDITOR"){
+          navigate("/reports")
+        }
         
       } catch (err) {
         const errorMessage = err.response?.data?.message || err.response?.data || "Login failed";
@@ -48,11 +53,8 @@ const AuthPage = () => {
         setLoading(false);
       }
     } else {
-      // --- SIGNUP LOGIC ---
       try {
         await authService.signup(formData); 
-        
-        alert("Signup successful! Please login.");
         toggleMode();
         
       } catch (err) {
@@ -68,11 +70,12 @@ const AuthPage = () => {
     <Container 
       fluid 
       className="d-flex align-items-center justify-content-center" 
-      style={{ minHeight: '100vh', backgroundColor: '#E6E6E6' }} // Theme Background
+      style={{ minHeight: '100vh', backgroundColor: '#E6E6E6' }}
     >
+      
       <Card 
         className="shadow-lg p-4" 
-        style={{ maxWidth: '450px', width: '100%', backgroundColor: '#BAC8B1' }} // Theme Card Background
+        style={{ maxWidth: '450px', width: '100%', backgroundColor: '#BAC8B1' }}
       >
         <Card.Body>
           <div className="text-center mb-4">
@@ -180,7 +183,7 @@ const AuthPage = () => {
             </p>
             {isLoginMode && (
                 <p className="mt-2 mb-0">
-                    <a href="/forgot" className="text-decoration-underline" style={{ color: '#404E3B' }}>Forgot Password?</a>
+                    <Link href="/forgot" className="text-decoration-underline" style={{ color: '#404E3B' }}>Forgot Password?</Link>
                 </p>
             )}
         </Card.Footer>

@@ -44,7 +44,8 @@ const AIAssistant = () => {
 
         try {
             // Pass the automatically managed sessionId
-            const res = await aiService.getSummary(sessionId, query, filters);
+            // const res = await aiService.getSummary(sessionId, query, filters);
+            const res = await aiService.sendMessage(query)
             setResponse(res.data.botResponse);
         } catch (err) {
             setError(`ComplianceBot error: ${err.response?.data?.message || err.message || 'Failed to connect to AI service.'}`);
@@ -52,11 +53,11 @@ const AIAssistant = () => {
             setLoading(false);
         }
     };
-    
+    /*
     const handleFilterChange = (e) => {
         setFilters({...filters, [e.target.name]: e.target.value});
     };
-
+*/
     const handleCopy = () => {
         if (response) {
             navigator.clipboard.writeText(response);
@@ -95,7 +96,7 @@ const AIAssistant = () => {
                     </Form.Group>
                     
                     <Row className="mb-3">
-                        <Col md={4}>
+                        {/* <Col md={4}>
                             <Form.Group>
                                 <Form.Label className="small text-muted">Scope</Form.Label>
                                 <Form.Select name="scope" onChange={handleFilterChange} disabled={loading}>
@@ -110,7 +111,7 @@ const AIAssistant = () => {
                                 <Form.Label className="small text-muted">Location (Optional)</Form.Label>
                                 <Form.Control name="location" type="text" onChange={handleFilterChange} disabled={loading} placeholder="e.g., BLR" />
                             </Form.Group>
-                        </Col>
+                        </Col> */}
                         <Col md={4} className="d-flex align-items-end">
                             <Button 
                                 type="submit" 
@@ -137,9 +138,6 @@ const AIAssistant = () => {
                             {response}
                         </pre>
                         <div className="d-flex gap-2 justify-content-end">
-                            <Button variant="outline-secondary" onClick={() => setQuery('')}>
-                                🗑️ Clear
-                            </Button>
                             <Button variant="success" onClick={handleCopy} style={{backgroundColor: SECONDARY_HEADER_COLOR, borderColor: SECONDARY_HEADER_COLOR}}>
                                 📋 Copy to Report
                             </Button>

@@ -14,6 +14,7 @@ import AuditLogPage from "./pages/AuditLogPage";
 import SoftwareManagement from "./pages/SoftwareManagement";
 import Vendors from "./pages/VendorManagement";
 import AIAssistant from "./pages/AIAssistant";
+
 const AppRoutes = () => {
     const location = useLocation();
     

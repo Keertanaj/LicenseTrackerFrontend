@@ -103,15 +103,17 @@ export const roleService = {
 }
 
 export const aiService = {
-    getSummary: (sessionId, query, filters) => api.post('/ai/query', 
+    getSummary: (sessionId, query, filters) => api.post('/ai/message', 
         { 
             query: query,
             ...filters 
         },
-        { 
-            params: { sessionId }
-        }
+        // { 
+        //     params: { sessionId }
+        // }
     ),
+
+    sendMessage : (query) => api.post("/ai/message", query)
 };
 
 export default api;

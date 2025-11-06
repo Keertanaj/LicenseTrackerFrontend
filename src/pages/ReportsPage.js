@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    Button, Table, Form, Row, Col, Card, 
-    Spinner, Alert, Badge, InputGroup 
+import {
+    Button, Table, Form, Row, Col, Card,
+    Spinner, Alert, Badge, InputGroup
 } from 'react-bootstrap';
-import { CSVLink } from 'react-csv'; 
-import jsPDF from 'jspdf'; 
+import { CSVLink } from 'react-csv';
+import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { reportService } from '../services/api'; 
+import { reportService } from '../services/api';
 
 const ReportsPage = () => {
     // --- State Initialization ---
@@ -28,7 +28,7 @@ const ReportsPage = () => {
                 }
             }
             const queryString = new URLSearchParams(activeFilters).toString();
-            const res = await reportService.getReport(queryString); 
+            const res = await reportService.getReport(queryString);
             setReportData(res.data || []);
         } catch (error) {
             console.error("Failed to fetch report data:", error);
@@ -37,10 +37,10 @@ const ReportsPage = () => {
             setLoading(false);
         }
     };
-    
+
     useEffect(() => { fetchReport(filters); }, []);
-    
-    useEffect(() => { 
+
+    useEffect(() => {
         if (reportData && reportData.length > 0) {
             setVendorOptions([...new Set((reportData || []).map(item => item.vendorName))].filter(Boolean).sort());
             setSoftwareOptions([...new Set((reportData || []).map(item => item.softwareName))].filter(Boolean).sort());
@@ -57,7 +57,7 @@ const ReportsPage = () => {
         setFilters(newFilters);
         fetchReport(newFilters); // Fetch the full report immediately
     }
-    
+
     const formatDataForExport = () => {
         const data = Array.isArray(reportData) ? reportData : []; // Defensive check
         return data.map(item => ({
@@ -89,7 +89,7 @@ const ReportsPage = () => {
     // --- UI Structure ---
     return (
         <div className="container-fluid mt-4">
-            
+
             {/* --- 1. Header and Export Controls (Top of the Page) --- */}
             <div className="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
                 <h1 className="text-secondary fw-light">
@@ -97,17 +97,17 @@ const ReportsPage = () => {
                 </h1>
                 <div className="d-flex gap-2">
                     <CSVLink
-                        data={dataToExport} 
+                        data={dataToExport}
                         headers={csvHeaders}
                         filename={"license_report.csv"}
                         className={`btn ${isExportDisabled ? 'btn-outline-secondary disabled' : 'btn-outline-primary'}`}
-                        aria-disabled={isExportDisabled} 
+                        aria-disabled={isExportDisabled}
                         onClick={(event) => { if (isExportDisabled) { event.preventDefault(); } }}
                     >
                         <i className="bi bi-file-earmark-spreadsheet me-1"></i> Export CSV
                     </CSVLink>
-                    <Button 
-                        onClick={exportPdf} 
+                    <Button
+                        onClick={exportPdf}
                         variant={isExportDisabled ? "outline-secondary" : "outline-danger"}
                         disabled={isExportDisabled}
                     >
@@ -137,9 +137,9 @@ const ReportsPage = () => {
                     </Card>
                 </Col>
                 {/* Add a spacer column for better spacing on large screens */}
-                <Col lg={4} className="d-none d-lg-block"></Col> 
+                <Col lg={4} className="d-none d-lg-block"></Col>
             </Row>
-            
+
             {/* --- 3. Filter Controls (UX: Positioned directly above the Table) --- */}
             <h4 className="mb-3 text-secondary border-bottom pb-2">
                 <i className="bi bi-funnel me-2"></i> Filter Log
@@ -148,7 +148,7 @@ const ReportsPage = () => {
                 <Card.Body className="py-3">
                     <Form onSubmit={(e) => { e.preventDefault(); handleFilterSubmit(); }}>
                         <Row className="align-items-center g-3">
-                            
+
                             {/* Filter Dropdowns (xs=12, md=3) */}
                             <Col xs={12} sm={6} lg={3}>
                                 <InputGroup size="sm">
@@ -177,21 +177,21 @@ const ReportsPage = () => {
                                     </Form.Select>
                                 </InputGroup>
                             </Col>
-                            
+
                             {/* Action Buttons (UX: Clear and Apply side-by-side) */}
                             <Col xs={12} sm={6} lg={3}>
                                 <div className="d-flex gap-2">
-                                    <Button 
-                                        variant="primary" 
-                                        onClick={handleFilterSubmit} 
+                                    <Button
+                                        variant="primary"
+                                        onClick={handleFilterSubmit}
                                         disabled={loading}
                                         className="w-50"
                                     >
                                         {loading ? <Spinner as="span" size="sm" /> : 'Apply'}
                                     </Button>
-                                    <Button 
-                                        variant="outline-secondary" 
-                                        onClick={handleClearFilters} 
+                                    <Button
+                                        variant="outline-secondary"
+                                        onClick={handleClearFilters}
                                         className="w-50"
                                         disabled={loading}
                                     >
@@ -207,18 +207,18 @@ const ReportsPage = () => {
             {/* --- 4. Data Table --- */}
             <h4 className="mb-3 text-secondary border-bottom pb-2">Full Assignment Log ({dataToExport.length} Results)</h4>
             <div className="table-responsive shadow-lg rounded">
-                
+
                 {loading && (
                     <Alert variant="light" className="text-center p-4 m-0">
                         <Spinner animation="border" className="me-2 text-primary" />
                         **Fetching latest report data...**
                     </Alert>
                 )}
-                
+
                 {!loading && (
                     <Table striped hover className="mb-0">
                         {/* Dark Theme Header for contrast */}
-                        <thead className="bg-dark text-white"> 
+                        <thead className="bg-dark text-white">
                             <tr>
                                 <th>Key</th>
                                 <th>Device ID</th>

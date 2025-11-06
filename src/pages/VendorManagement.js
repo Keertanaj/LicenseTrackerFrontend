@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Table, Button, Spinner, Alert, Breadcrumb, Card } from 'react-bootstrap';
-import { vendorService } from '../services/api';
-import VendorForm from '../components/VendorForm'; 
+import React, { useState, useEffect } from "react";
+import { Row, Col, Table, Button, Spinner, Alert, Breadcrumb, Card } from "react-bootstrap";
+import { vendorService } from "../services/api";
+import VendorForm from "../components/VendorForm"; 
 
-// --- CLEAN VENDOR COLOR THEME ---
-const PRIMARY_ACCENT_COLOR = '#EAD094';     // Purple: Main action color
-const SECONDARY_HEADER_COLOR = '#B2DCE2';   // Light Blue: Header/Table Head
-const EDIT_ACCENT_COLOR = '#83B366';        // Green: Edit Button
-const DANGER_COLOR = '#F3000E';             // Red: Delete Button
-const TEXT_COLOR = '#333333';               // Dark Gray: Standard text
-const BG_COLOR = '#F8F8F8';                 // Off-White: Clean background
+const PRIMARY_ACCENT_COLOR = '#EAD094'; 
+const SECONDARY_HEADER_COLOR = '#B2DCE2'; 
+const EDIT_ACCENT_COLOR = '#83B366'; 
+const DANGER_COLOR = '#F3000E'; 
+const TEXT_COLOR = '#333333'; 
+const BG_COLOR = '#F8F8F8'; 
 
 const statusPillStyle = {
-    // Light border, minimal impact
     border: `1px solid ${PRIMARY_ACCENT_COLOR}`,
     color: PRIMARY_ACCENT_COLOR,
     backgroundColor: 'white',
     fontSize: '0.75rem',
     padding: '4px 8px',
-    borderRadius: '15px', // More pill-like
+    borderRadius: '15px', 
     display: 'inline-block',
     minWidth: '90px', 
     height: '25px',
@@ -33,9 +31,6 @@ const VendorManagement = () => {
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState(null);
-
-    // [omitted: fetchVendors, useEffect, openAddForm, openEditForm, handleSave, handleDelete logic] 
-    // NOTE: The handler logic remains identical to the previous version.
 
     const fetchVendors = async () => {
         setLoading(true);
@@ -90,7 +85,6 @@ const VendorManagement = () => {
         }
     };
 
-    // --- MOBILE CARD VIEW COMPONENT (Clean, bordered design) ---
     const VendorCard = ({ vendor }) => (
         <Card className="mb-3 shadow-sm" style={{ borderLeft: `5px solid ${PRIMARY_ACCENT_COLOR}`, borderRadius: '8px' }}>
             <Card.Body className="p-3">
@@ -112,7 +106,7 @@ const VendorManagement = () => {
                     style={{ 
                         fontSize: '0.9rem',
                         width: '50%', 
-                        color: EDIT_ACCENT_COLOR, // Green Link
+                        color: EDIT_ACCENT_COLOR, 
                         borderRight: '1px solid #eee'
                     }}
                 >
@@ -125,7 +119,7 @@ const VendorManagement = () => {
                     style={{ 
                         fontSize: '0.9rem',
                         width: '50%', 
-                        color: DANGER_COLOR, // Red Link
+                        color: DANGER_COLOR, 
                     }}
                 >
                     🗑️ Delete
@@ -134,7 +128,6 @@ const VendorManagement = () => {
         </Card>
     );
     
-    // --- Main Render ---
     return (
         <div className="container-fluid p-2 p-sm-4" style={{ backgroundColor: BG_COLOR, minHeight: '100vh' }}>
 
@@ -172,7 +165,6 @@ const VendorManagement = () => {
                         </Alert>
                     ) : (
                         <>
-                            {/* Desktop/Tablet View: Full Table */}
                             <div className="table-responsive d-none d-md-block">
                                 <Table hover className="mb-0">
                                     <thead style={{ backgroundColor: SECONDARY_HEADER_COLOR, color: 'black' }} className="text-center">
@@ -223,7 +215,6 @@ const VendorManagement = () => {
                                 </Table>
                             </div>
                             
-                            {/* Mobile View: Stacked Cards */}
                             <div className="d-md-none p-3">
                                 {vendorList.map(vendor => <VendorCard key={vendor.vendorId} vendor={vendor} />)}
                             </div>
@@ -232,13 +223,12 @@ const VendorManagement = () => {
                 </Card.Body>
             </Card>
 
-            {/* Vendor Form Modal */}
             {showForm && (
                 <VendorForm 
                     vendor={selectedVendor} 
                     onSave={handleSave} 
                     onHide={() => { setShowForm(false); setSelectedVendor(null); }} 
-                    accentColor={PRIMARY_ACCENT_COLOR} // Pass the primary purple accent
+                    accentColor={PRIMARY_ACCENT_COLOR} 
                 />
             )}
         </div>
