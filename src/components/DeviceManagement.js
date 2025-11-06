@@ -3,6 +3,7 @@ import { Row, Col, Table, Button, Dropdown, Spinner, Alert, Breadcrumb, Card, Fo
 import DeviceForm from './DeviceForm';
 import { deviceService } from '../services/api';
 import AssignLicenseModal from '../components/AssignLicenseModal'; 
+import ViewSoftwareModal from '../components/ViewSoftwareModal'; // 💡 IMPORTED NEW MODAL
 
 const PRIMARY_BLUE = '#6596F3';
 const ACCENT_GREEN = '#83B366';
@@ -30,6 +31,10 @@ const DeviceManagement = () => {
     const [csvFile, setCsvFile] = useState(null);
     const fileInputRef = useRef(null);
 
+    // 💡 NEW STATE FOR SOFTWARE MODAL
+    const [showSoftwareModal, setShowSoftwareModal] = useState(false);
+    const [deviceDetailsName, setDeviceDetailsName] = useState('');
+
     const openAssignmentModal = (deviceId) => {
         setSelectedDeviceId(deviceId);
         setShowAssignmentModal(true);
@@ -40,6 +45,20 @@ const DeviceManagement = () => {
         setSelectedDeviceId(null);
         loadDevices(); 
     };
+
+    // 💡 NEW HANDLER FOR SOFTWARE STATUS MODAL
+    const openSoftwareModal = (deviceId, deviceName) => {
+        setSelectedDeviceId(deviceId);
+        setDeviceDetailsName(deviceName);
+        setShowSoftwareModal(true);
+    };
+
+    const closeSoftwareModal = () => {
+        setShowSoftwareModal(false);
+        // We reload devices/locations in case the device status was changed
+        loadDevices();
+        loadLocations(); 
+    }
 
     const displayFeedback = (message, variant = 'danger') => {
         setFeedbackMessage({ message, variant });
@@ -190,7 +209,7 @@ const DeviceManagement = () => {
     const actionButtonMobileStyle = {
         fontSize: '0.9rem',
         padding: '8px 0',
-        width: '33.33%', 
+        width: '25%', // Adjusted width for 4 buttons on mobile
         borderRadius: '0',
     };
     
@@ -250,6 +269,12 @@ const DeviceManagement = () => {
                     style={{ ...actionButtonMobileStyle, backgroundColor: ACCENT_GREEN, borderColor: ACCENT_GREEN, color: 'white' }}
                 >
                     Assign
+                </Button>
+                <Button 
+                    onClick={() => openSoftwareModal(d.deviceId, d.deviceName)} // 💡 NEW BUTTON ACTION
+                    style={{ ...actionButtonMobileStyle, backgroundColor: PRIMARY_BLUE, borderColor: PRIMARY_BLUE, color: 'white' }}
+                >
+                    SW Status
                 </Button>
                 <Button 
                     onClick={() => openEditForm(d)}
@@ -330,7 +355,7 @@ const DeviceManagement = () => {
                 
                 <Col xs={12} md={6} className="d-flex flex-wrap justify-content-md-end gap-3 mt-2 mt-md-0">
                     
-                    {/* 💡 REVISED BULK UPLOAD GROUPING */}
+                    {/* Bulk Upload Controls */}
                     <div className="d-flex align-items-center gap-2">
                         
                         {/* HIDDEN FILE INPUT (Receives the file) */}
@@ -506,6 +531,13 @@ const DeviceManagement = () => {
                                                         Assign
                                                     </Button>
                                                     <Button 
+                                                        onClick={() => openSoftwareModal(d.deviceId, d.deviceName)} // 💡 NEW ACTION
+                                                        style={{ ...actionButtonStyle, backgroundColor: PRIMARY_BLUE, borderColor: PRIMARY_BLUE, color: 'white' }}
+                                                        title="View Software Status"
+                                                    >
+                                                        SW Status
+                                                    </Button>
+                                                    <Button 
                                                         onClick={() => openEditForm(d)}
                                                         style={{ ...actionButtonStyle, backgroundColor: PRIMARY_BLUE, borderColor: PRIMARY_BLUE, color: 'white' }}
                                                         title="Edit Details"
@@ -546,6 +578,14 @@ const DeviceManagement = () => {
                 <DeviceForm
                     existingDevice={editingDevice}
                     onClose={() => { setShowForm(false); loadDevices(); }}
+                />
+            )}
+            {showSoftwareModal && selectedDeviceId && (
+                <ViewSoftwareModal
+                    deviceId={selectedDeviceId}
+                    deviceName={deviceDetailsName}
+                    show={showSoftwareModal}
+                    onClose={closeSoftwareModal}
                 />
             )}
         </div>

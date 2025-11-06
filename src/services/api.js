@@ -35,7 +35,9 @@ export const deviceService = {
     searchDevices: (ipAddress, location) => api.get(`/devices/search`, {params: { ipAddress, location },}),
     getAllLocations: () => api.get('/devices/locations'),
     getAllIpAddresses: () => api.get('/devices/ipaddresses'),
-    getDeviceById: (deviceId) => api.get(`/devices/${deviceId}`)
+    getDeviceById: (deviceId) => api.get(`/devices/${deviceId}`),
+    getSoftwareStatus: (deviceId) => api.get(`/devices/${deviceId}/software-status`),
+    renewSoftwareVersion: (deviceId) => api.put(`/devices/${deviceId}/renew-version`),
 };
 
 export const licenseService = {
