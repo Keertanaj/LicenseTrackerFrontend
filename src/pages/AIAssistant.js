@@ -2,149 +2,211 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button, Form, Spinner, Alert, Breadcrumb } from 'react-bootstrap';
 import { aiService } from '../services/api';
 
-const PRIMARY_ACCENT_COLOR = '#D3A4EA';
-const SECONDARY_HEADER_COLOR = '#83B366';
-const DANGER_COLOR = '#F3000E';
-const BG_COLOR = '#F8F8F8';
+const PRIMARY_TEXT_COLOR = '#333333';          
+const SECONDARY_TEXT_COLOR = '#6c757d';       
+const PRIMARY_ACCENT_COLOR = '#6596F3';       
+const CARD_BG_COLOR = '#FFFFFF';              
+const MAIN_BG_COLOR = '#F8F9FA';              
+const DANGER_COLOR = '#DC3545';               
+
+const CODE_BLOCK_BG = '#F0F0F0'; 
+
+const botBubbleStyle = {
+    backgroundColor: '#E6F0FF', 
+    color: PRIMARY_TEXT_COLOR,
+    border: `1px solid ${PRIMARY_ACCENT_COLOR}`,
+    maxWidth: '80%',
+    marginRight: 'auto',
+    borderRadius: '15px 15px 15px 5px',
+};
+
+const userBubbleStyle = {
+    backgroundColor: PRIMARY_ACCENT_COLOR, 
+    color: CARD_BG_COLOR, 
+    maxWidth: '80%',
+    marginLeft: 'auto',
+    borderRadius: '15px 15px 5px 15px',
+};
+
+const FormattedResponse = ({ text }) => {
+    const formattedText = text.replace(/\*\s/g, '<li>').replace(/\n\*/g, '<ul>*');
+    const finalTextColor = PRIMARY_TEXT_COLOR;
+
+    const withCodeBlocks = formattedText.replace(/```(.*?)\n([\s\S]*?)```/g, 
+        (match, p1, p2) => `<div style="background:${CODE_BLOCK_BG}; border: 1px solid #ddd; padding:10px; border-radius:5px; margin:5px 0; overflow-x:auto;"><pre style="margin:0; color:${finalTextColor}; font-size:0.9em;">${p2.trim()}</pre></div>`
+    );
+
+    const finalHtml = withCodeBlocks.replace(/\n/g, '<br/>');
+    
+    return <div dangerouslySetInnerHTML={{ __html: finalHtml }} />;
+};
+
 
 const AIAssistant = () => {
     const [query, setQuery] = useState('');
     const [response, setResponse] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [filters, setFilters] = useState({});
     const [sessionId, setSessionId] = useState(null);
+    const [history, setHistory] = useState([]);
 
     useEffect(() => {
         const storedSessionId = localStorage.getItem('complianceBotSessionId');
         
         if (storedSessionId) {
-            // Use existing session ID
             setSessionId(storedSessionId);
         } else {
-            // Generate and store new ID
             const newId = 'bot-session-' + Date.now() + Math.random().toString(36).substring(2, 8);
             localStorage.setItem('complianceBotSessionId', newId);
             setSessionId(newId);
+            setHistory([{ type: 'bot', content: "Hello! I am ComplianceBot, your expert license and device manager. How can I assist you today?" }]);
         }
     }, []);
 
     const handleQuery = async (e) => {
         e.preventDefault();
         
+        const currentQuery = query.trim();
+        if (!currentQuery || !sessionId) {
+            setError("Session not ready or query is empty.");
+            return;
+        }
+        
+        setHistory(prev => [...prev, { type: 'user', content: currentQuery }]);
+        setQuery(''); 
         setLoading(true);
         setError(null);
         setResponse(null);
 
-        if (!query.trim() || !sessionId) {
-            setError("Session not ready or query is empty.");
-            setLoading(false);
-            return;
-        }
-
         try {
-            // Pass the automatically managed sessionId
-            // const res = await aiService.getSummary(sessionId, query, filters);
-            const res = await aiService.sendMessage(query)
-            setResponse(res.data.botResponse);
+            const res = await aiService.sendMessage(query); 
+            const botResponse = res.data.botResponse;
+            setResponse(botResponse); 
+            setHistory(prev => [...prev, { type: 'bot', content: botResponse }]);
+
         } catch (err) {
-            setError(`ComplianceBot error: ${err.response?.data?.message || err.message || 'Failed to connect to AI service.'}`);
+            const errorMessage = `ComplianceBot error: ${err.response?.data?.botResponse || err.message || 'Failed to connect to AI service.'}`;
+            setError(errorMessage);
+            setHistory(prev => [...prev, { type: 'error', content: "Error processing request. See console for details." }]);
         } finally {
             setLoading(false);
         }
     };
-    /*
-    const handleFilterChange = (e) => {
-        setFilters({...filters, [e.target.name]: e.target.value});
-    };
-*/
+    
     const handleCopy = () => {
-        if (response) {
-            navigator.clipboard.writeText(response);
+        const lastResponse = history.length > 0 && history[history.length - 1].type === 'bot' 
+                             ? history[history.length - 1].content : response;
+
+        if (lastResponse) {
+            navigator.clipboard.writeText(lastResponse);
             alert('Copied to clipboard!');
         }
     };
-    
+
     if (!sessionId) {
-        return <div className="text-center py-5"><Spinner animation="border" style={{ color: PRIMARY_ACCENT_COLOR }} /> <p>Initializing Chat Session...</p></div>;
+        return <div className="text-center py-5" style={{backgroundColor: MAIN_BG_COLOR}}><Spinner animation="border" style={{ color: PRIMARY_ACCENT_COLOR }} role="status" /> <p style={{color: PRIMARY_TEXT_COLOR}}>Initializing Chat Session...</p></div>;
     }
 
     return (
-        <div className="container-fluid p-2 p-sm-4" style={{ backgroundColor: BG_COLOR, minHeight: '100vh' }}>
+        <div className="container-fluid p-2 p-sm-4" style={{ backgroundColor: MAIN_BG_COLOR, minHeight: '100vh' }}>
             <Row className="mb-4">
                 <Col>
-                    <h2 style={{ color: PRIMARY_ACCENT_COLOR, fontWeight: 'bold' }}>ComplianceBot AI Assistant</h2>
+                    <h2 style={{ color: PRIMARY_TEXT_COLOR, fontWeight: 'bold' }}>ComplianceBot AI Assistant</h2>
                     <Breadcrumb>
-                        <Breadcrumb.Item linkAs="span" style={{ color: 'gray' }}>Dashboard</Breadcrumb.Item>
+                        <Breadcrumb.Item linkAs="span" style={{ color: SECONDARY_TEXT_COLOR }}>Dashboard</Breadcrumb.Item>
                         <Breadcrumb.Item active style={{ color: PRIMARY_ACCENT_COLOR, fontWeight: 'bold' }}>AI Assistant</Breadcrumb.Item>
                     </Breadcrumb>
                 </Col>
             </Row>
 
-            <Card className="shadow-sm p-4 mb-4" style={{ borderLeft: `5px solid ${PRIMARY_ACCENT_COLOR}` }}>
-                <h5 className="mb-3" style={{ color: SECONDARY_HEADER_COLOR }}>Ask ComplianceBot</h5>
-                
-                <Form onSubmit={handleQuery}>
-                    <Form.Group className="mb-3">
-                        <Form.Control
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder='e.g., "Summarize licenses expiring in the next 30 days by location"'
-                            disabled={loading}
-                        />
-                    </Form.Group>
-                    
-                    <Row className="mb-3">
-                        {/* <Col md={4}>
-                            <Form.Group>
-                                <Form.Label className="small text-muted">Scope</Form.Label>
-                                <Form.Select name="scope" onChange={handleFilterChange} disabled={loading}>
-                                    <option value="">All</option>
-                                    <option value="LICENSE">License</option>
-                                    <option value="DEVICE">Device</option>
-                                </Form.Select>
+            <Row>
+                <Col md={8} className="mb-4">
+                    <Card className="shadow-lg" style={{ backgroundColor: CARD_BG_COLOR, border: `1px solid ${SECONDARY_TEXT_COLOR}` }}>
+                        <Card.Header style={{ backgroundColor: PRIMARY_ACCENT_COLOR, color: CARD_BG_COLOR, fontWeight: 'bold' }}>
+                            Conversation Log
+                        </Card.Header>
+                        <Card.Body className="d-flex flex-column" style={{ minHeight: '60vh', maxHeight: '60vh', overflowY: 'auto', padding: '20px' }}>
+                            
+                            {history.length === 0 ? (
+                                <p className="text-center mt-auto" style={{color: SECONDARY_TEXT_COLOR}}>Enter a query to start the compliance analysis...</p>
+                            ) : (
+                                history.map((msg, index) => (
+                                    <div key={index} className="p-3 mb-3" 
+                                         style={msg.type === 'user' ? userBubbleStyle : botBubbleStyle}>
+                                        
+                                        <small className="d-block fw-bold mb-1" style={{ fontSize: '0.7rem', color: msg.type === 'user' ? 'rgba(255,255,255,0.8)' : PRIMARY_ACCENT_COLOR }}>
+                                            {msg.type === 'user' ? 'You' : 'ComplianceBot'}
+                                        </small>
+                                        
+                                        <FormattedResponse text={msg.content} />
+
+                                        <small className="d-block text-end mt-1" style={{ fontSize: '0.7rem', color: msg.type === 'user' ? 'rgba(255,255,255,0.5)' : SECONDARY_TEXT_COLOR }}>
+                                            {new Date().toLocaleTimeString()}
+                                        </small>
+                                    </div>
+                                ))
+                            )}
+
+                        </Card.Body>
+                        <Card.Footer className="d-flex justify-content-end" style={{ backgroundColor: MAIN_BG_COLOR, borderTop: `1px solid ${SECONDARY_TEXT_COLOR}` }}>
+                            <Button 
+                                variant="outline-primary" 
+                                onClick={handleCopy} 
+                                style={{ borderColor: PRIMARY_ACCENT_COLOR, color: PRIMARY_ACCENT_COLOR }}
+                                disabled={!history.some(msg => msg.type === 'bot')}
+                            >
+                                📋 Copy Last Response
+                            </Button>
+                        </Card.Footer>
+                    </Card>
+                </Col>
+
+                <Col md={4}>
+                    <Card className="shadow-lg p-3" style={{ backgroundColor: CARD_BG_COLOR, border: `1px solid ${PRIMARY_ACCENT_COLOR}` }}>
+                        <h5 className="mb-3" style={{ color: PRIMARY_TEXT_COLOR }}>Ask ComplianceBot</h5>
+                        
+                        <Form onSubmit={handleQuery}>
+                            <Form.Group className="mb-3">
+                                <Form.Control
+                                    as="textarea"
+                                    rows={6}
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    placeholder='Enter your compliance question...'
+                                    disabled={loading}
+                                    style={{ backgroundColor: MAIN_BG_COLOR, color: PRIMARY_TEXT_COLOR, borderColor: SECONDARY_TEXT_COLOR, resize: 'none' }}
+                                />
                             </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                            <Form.Group>
-                                <Form.Label className="small text-muted">Location (Optional)</Form.Label>
-                                <Form.Control name="location" type="text" onChange={handleFilterChange} disabled={loading} placeholder="e.g., BLR" />
-                            </Form.Group>
-                        </Col> */}
-                        <Col md={4} className="d-flex align-items-end">
+                            
+                            {loading && <p style={{color: SECONDARY_TEXT_COLOR}}>Analyzing data...</p>}
+                            {error && <Alert variant="danger" style={{backgroundColor: DANGER_COLOR, color: CARD_BG_COLOR}}>{error}</Alert>}
+
                             <Button 
                                 type="submit" 
-                                style={{ backgroundColor: PRIMARY_ACCENT_COLOR, borderColor: PRIMARY_ACCENT_COLOR }} 
-                                className="w-100 fw-bold"
-                                disabled={loading}
+                                style={{ backgroundColor: PRIMARY_ACCENT_COLOR, borderColor: PRIMARY_ACCENT_COLOR, color: CARD_BG_COLOR }} 
+                                className="w-100 fw-bold shadow-sm mt-2"
+                                disabled={loading || !query.trim()}
                             >
-                                {loading ? <Spinner animation="border" size="sm" /> : 'Ask Bot'}
+                                {loading ? <Spinner animation="border" size="sm" /> : 'Ask ComplianceBot'}
                             </Button>
-                        </Col>
-                    </Row>
-                </Form>
-            </Card>
-
-            <Card className="shadow-sm p-4" style={{ borderLeft: `5px solid ${SECONDARY_HEADER_COLOR}` }}>
-                <h5 className="mb-3" style={{ color: PRIMARY_ACCENT_COLOR }}>Bot Response</h5>
-                {error && <Alert variant="danger" style={{backgroundColor: DANGER_COLOR, color: 'white'}}>{error}</Alert>}
-                
-                {loading && <p className="text-muted">Analyzing data...</p>}
-
-                {response ? (
-                    <div>
-                        <pre style={{ whiteSpace: 'pre-wrap', backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '5px', border: '1px solid #eee' }}>
-                            {response}
-                        </pre>
-                        <div className="d-flex gap-2 justify-content-end">
-                            <Button variant="success" onClick={handleCopy} style={{backgroundColor: SECONDARY_HEADER_COLOR, borderColor: SECONDARY_HEADER_COLOR}}>
-                                📋 Copy to Report
-                            </Button>
-                        </div>
-                    </div>
-                ) : !loading && <p className="text-muted">Waiting for query...</p>}
-            </Card>
+                        </Form>
+                    </Card>
+                    
+                    <Card className="shadow-lg p-3 mt-4" style={{ backgroundColor: CARD_BG_COLOR, border: `1px solid ${SECONDARY_TEXT_COLOR}` }}>
+                        <h5 style={{ color: PRIMARY_TEXT_COLOR }}>Session Info</h5>
+                        <p style={{ color: SECONDARY_TEXT_COLOR, fontSize: '0.9rem' }}>
+                            Session ID: <code style={{color: PRIMARY_ACCENT_COLOR, fontWeight: 'bold'}}>{sessionId}</code>
+                        </p>
+                        <Button 
+                            variant="outline-danger" 
+                            onClick={() => setHistory([])}
+                            disabled={history.length === 0}
+                        >
+                            🗑️ Clear Conversation
+                        </Button>
+                    </Card>
+                </Col>
+            </Row>
         </div>
     );
 };

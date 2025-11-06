@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Button, Row, Col } from "react-bootstrap";
+import { Modal, Form, Button, Row, Col, Alert } from "react-bootstrap";
 import { deviceService } from "../services/api";
 
 const PRIMARY_COLOR = '#6596F3'; // Define the main blue color
@@ -29,15 +29,13 @@ const DeviceForm = ({ existingDevice, onClose }) => {
     try {
       if (isEdit) {
         await deviceService.updateDevice(form.deviceId, form);
-        alert("Device updated successfully!");
       } else {
         await deviceService.addDevice(form);
-        alert("Device added successfully!");
       }
       onClose();
     } catch (err) {
       console.error(err);
-      alert("Failed to save device");
+       <Alert variant="danger" className="text-center" style={{backgroundColor: '#F3000E', color: 'white', borderColor: '#F3000E'}}>{err}</Alert>
     }
   };
 

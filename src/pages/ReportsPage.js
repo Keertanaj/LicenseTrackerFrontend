@@ -9,7 +9,6 @@ import autoTable from 'jspdf-autotable';
 import { reportService } from '../services/api';
 
 const ReportsPage = () => {
-    // --- State Initialization ---
     const [reportData, setReportData] = useState([]);
     const [filters, setFilters] = useState({ vendor: '', software: '', location: '' });
     const [loading, setLoading] = useState(false);
@@ -17,7 +16,6 @@ const ReportsPage = () => {
     const [softwareOptions, setSoftwareOptions] = useState([]);
     const [locationOptions, setLocationOptions] = useState([]);
 
-    // --- Functions (Unchanged core logic) ---
     const fetchReport = async (currentFilters) => {
         setLoading(true);
         try {
@@ -51,15 +49,14 @@ const ReportsPage = () => {
     const handleFilterChange = (e) => { setFilters({ ...filters, [e.target.name]: e.target.value }); };
     const handleFilterSubmit = () => { fetchReport(filters); };
 
-    // UX Improvement: Function to clear all filters
     const handleClearFilters = () => {
         const newFilters = { vendor: '', software: '', location: '' };
         setFilters(newFilters);
-        fetchReport(newFilters); // Fetch the full report immediately
+        fetchReport(newFilters); 
     }
 
     const formatDataForExport = () => {
-        const data = Array.isArray(reportData) ? reportData : []; // Defensive check
+        const data = Array.isArray(reportData) ? reportData : []; 
         return data.map(item => ({
             'License Key': item.licenseKey || '', 'Device ID': item.deviceId || '',
             'Software': item.softwareName || '', 'Vendor': item.vendorName || '',
@@ -71,10 +68,55 @@ const ReportsPage = () => {
         { label: "Software", key: "Software" }, { label: "Vendor", key: "Vendor" },
         { label: "Location", key: "Location" }, { label: "Expiry", key: "Expiry" },
     ];
-    const exportPdf = () => { /* ... existing logic ... */ };
-    const getExpiryBadge = (expiryDateStr) => { /* ... existing logic ... */ };
+    
+    // START MISSING LOGIC
+    
+    const getExpiryBadge = (expiryDateStr) => {
+        if (!expiryDateStr) return <Badge bg="secondary">N/A</Badge>;
 
-    // FIX: Safely calculate metrics using the defensive check
+        const today = new Date();
+        const expiryDate = new Date(expiryDateStr);
+        const diffTime = expiryDate.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 0) return <Badge bg="danger">EXPIRED</Badge>;
+        if (diffDays <= 30) return <Badge bg="warning" text="dark">Expires Soon ({diffDays}d)</Badge>;
+        if (diffDays <= 90) return <Badge bg="info">Due</Badge>;
+        return <Badge bg="success">Active</Badge>;
+    };
+
+    const exportPdf = () => {
+        const doc = new jsPDF();
+        const tableData = dataToExport.map(item => [
+            item['License Key'],
+            item['Device ID'],
+            item['Software'],
+            item['Vendor'],
+            item['Location'],
+            item['Expiry']
+        ]);
+
+        const tableHeaders = csvHeaders.map(h => h.label);
+
+        doc.setFontSize(16);
+        doc.text("License Compliance Report", 14, 15);
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 20);
+
+        autoTable(doc, {
+            head: [tableHeaders],
+            body: tableData,
+            startY: 25,
+            theme: 'striped',
+            styles: { fontSize: 8, cellPadding: 2 },
+            headStyles: { fillColor: [52, 58, 64] } 
+        });
+
+        doc.save("License_Compliance_Report.pdf");
+    };
+
+    // END MISSING LOGIC
+
     const safeReportData = Array.isArray(reportData) ? reportData : [];
 
     const expiredCount = safeReportData.filter(item => {
@@ -86,14 +128,12 @@ const ReportsPage = () => {
     const isExportDisabled = loading || dataToExport.length === 0;
 
 
-    // --- UI Structure ---
     return (
         <div className="container-fluid mt-4">
 
-            {/* --- 1. Header and Export Controls (Top of the Page) --- */}
             <div className="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
                 <h1 className="text-secondary fw-light">
-                    <i className="bi bi-bar-chart-line-fill me-2"></i> **License Report Dashboard**
+                    <i className="bi bi-bar-chart-line-fill me-2"></i> License Reports
                 </h1>
                 <div className="d-flex gap-2">
                     <CSVLink
@@ -116,7 +156,6 @@ const ReportsPage = () => {
                 </div>
             </div>
 
-            {/* --- 2. Key Metrics Cards (Clear separation from filters) --- */}
             <Row className="g-4 mb-5">
                 <Col md={6} lg={4}>
                     <Card className="shadow-lg h-100 border-0">
@@ -136,11 +175,9 @@ const ReportsPage = () => {
                         <Card.Footer className="text-end text-danger fw-bold bg-light">Immediate Action Required</Card.Footer>
                     </Card>
                 </Col>
-                {/* Add a spacer column for better spacing on large screens */}
                 <Col lg={4} className="d-none d-lg-block"></Col>
             </Row>
 
-            {/* --- 3. Filter Controls (UX: Positioned directly above the Table) --- */}
             <h4 className="mb-3 text-secondary border-bottom pb-2">
                 <i className="bi bi-funnel me-2"></i> Filter Log
             </h4>
@@ -149,7 +186,6 @@ const ReportsPage = () => {
                     <Form onSubmit={(e) => { e.preventDefault(); handleFilterSubmit(); }}>
                         <Row className="align-items-center g-3">
 
-                            {/* Filter Dropdowns (xs=12, md=3) */}
                             <Col xs={12} sm={6} lg={3}>
                                 <InputGroup size="sm">
                                     <InputGroup.Text><i className="bi bi-building"></i></InputGroup.Text>
@@ -178,7 +214,6 @@ const ReportsPage = () => {
                                 </InputGroup>
                             </Col>
 
-                            {/* Action Buttons (UX: Clear and Apply side-by-side) */}
                             <Col xs={12} sm={6} lg={3}>
                                 <div className="d-flex gap-2">
                                     <Button
@@ -204,7 +239,6 @@ const ReportsPage = () => {
                 </Card.Body>
             </Card>
 
-            {/* --- 4. Data Table --- */}
             <h4 className="mb-3 text-secondary border-bottom pb-2">Full Assignment Log ({dataToExport.length} Results)</h4>
             <div className="table-responsive shadow-lg rounded">
 
@@ -217,7 +251,6 @@ const ReportsPage = () => {
 
                 {!loading && (
                     <Table striped hover className="mb-0">
-                        {/* Dark Theme Header for contrast */}
                         <thead className="bg-dark text-white">
                             <tr>
                                 <th>Key</th>
@@ -232,7 +265,7 @@ const ReportsPage = () => {
                         <tbody>
                             {dataToExport.map((item, index) => (
                                 <tr key={index}>
-                                    <td>**{item['License Key']}**</td>
+                                    <td>{item['License Key']}</td>
                                     <td>{item['Device ID']}</td>
                                     <td>{item['Software']}</td>
                                     <td className="d-none d-md-table-cell">{item['Vendor']}</td>

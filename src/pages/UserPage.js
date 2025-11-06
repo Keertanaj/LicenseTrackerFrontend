@@ -145,7 +145,7 @@ const UserPage = () => {
         <div className="container-fluid mt-4">
             <div className="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
                 <h1 className="text-secondary fw-light">
-                    <i className="bi bi-people-fill me-2"></i> **User Management**
+                    <i className="bi bi-people-fill me-2"></i> User Management
                 </h1>
                 <Button variant="primary" onClick={() => setShowCreateModal(true)} disabled={loading || availableRoles.length === 0}>
                     <i className="bi bi-person-plus-fill me-1"></i> Add New User
@@ -179,7 +179,7 @@ const UserPage = () => {
                                 {users.map(user => (
                                     <tr key={user.userId}>
                                         <td>{user.userId}</td>
-                                        <td>**{user.name}**</td>
+                                        <td>{user.name}</td>
                                         <td>{user.email}</td>
                                         <td>{getRoleBadge(user.role)}</td>
                                         <td className="text-end d-flex justify-content-end gap-2">

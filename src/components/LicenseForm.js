@@ -34,7 +34,7 @@ const LicenseForm = ({ existingLicense, onClose }) => {
 
     const fetchSoftwareNames = async () => {
         try {
-            const res = await softwareService.getAllSoftwareNames();
+            const res = await softwareService.getAllSoftware();
             setSoftwareNames(res.data || []);
         } catch (err) {
             console.error("Failed to fetch software names", err);
@@ -56,15 +56,12 @@ const LicenseForm = ({ existingLicense, onClose }) => {
     try {
       if (isEdit) {
         await licenseService.updateLicense(form.licenseKey, form);
-        alert("License updated successfully!");
       } else {
         await licenseService.addLicense(form);
-        alert("License added successfully!");
       }
       onClose();
     } catch (err) {
       console.error(err);
-      alert("Failed to save license");
     }
   };
 
@@ -128,15 +125,15 @@ const LicenseForm = ({ existingLicense, onClose }) => {
                     <Form.Label className="fw-bold" style={{ color: LABEL_COLOR }}>Software Name</Form.Label>
                     <Form.Select
                         name="softwareName"
-                        value={form.softwareName}
+                        value={form.id}
                         onChange={handleChange}
                         style={{ borderColor: ACCENT_COLOR }}
                         required
                     >
                         <option value="">Select Software</option>
-                        {softwareNames.map((name) => (
-                            <option key={name} value={name}>
-                                {name}
+                        {softwareNames.map((software) => (
+                            <option key={software.id} value={software.softwareName}>
+                                {software.softwareName}
                             </option>
                         ))}
                     </Form.Select>

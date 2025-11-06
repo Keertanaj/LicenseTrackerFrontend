@@ -95,14 +95,12 @@ const Dashboard = () => {
             </Row>
 
             <hr />
-
-            {/* --- EXPIRING LICENSES TABLE --- */}
             <Row>
                 <Col>
                     <Card className="shadow-sm">
                         <Card.Header 
                           style={{ backgroundColor: "#B2DCE2", color: "black", fontWeight: 'bold' }}>
-                            ▼ Expiring Licenses This Month 
+                            Expiring Licenses This Month 
                         </Card.Header>
                         <Card.Body className="p-0">
                             <Table striped bordered hover className="mb-0 text-center">
@@ -110,7 +108,6 @@ const Dashboard = () => {
                                     <tr>
                                         <th>Software</th>
                                         <th>Vendor</th>
-                                        <th>Devices Used</th>
                                         <th>Expiry Date</th>
                                     </tr>
                                 </thead>
@@ -120,7 +117,6 @@ const Dashboard = () => {
                                             <tr key={index}>
                                                 <td style={{ fontWeight: 'bold' }}>{item.softwareName}</td>
                                                 <td>{item.vendor}</td>
-                                                <td>{item.devicesAtRiskCountRes}</td> {/* Assuming devicesUsed is available in LicenseAlertDTO or calculated here */}
                                                 <td style={{ color: COLORS.warning, fontWeight: 'bold' }}>{item.validTo}</td>
                                             </tr>
                                         ))

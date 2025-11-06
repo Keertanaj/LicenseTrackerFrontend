@@ -3,25 +3,41 @@ import { Container, Navbar, Nav, Button } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../components/AuthContext"; 
 
+const PRIMARY_COLOR = '#FFFFFF';      
+const ACCENT_COLOR = '#171717ff';      
+const HOVER_COLOR = '#f0f0f0';        
+const TEXT_COLOR = '#333333';        
+const BORDER_COLOR = '#212529';  
+const ALL_AUTHENTICATED_ROLES = [
+    "ROLE_USER",
+    "ROLE_ADMIN",
+    "ROLE_SECURITY_HEAD",
+    "ROLE_PRODUCT_OWNER",
+    "ROLE_COMPLIANCE_LEAD",
+    "ROLE_COMPLIANCE_OFFICER",
+    "ROLE_PROCUREMENT_LEAD",
+    "ROLE_PROCUREMENT_OFFICER",
+    "ROLE_OPERATIONS_MANAGER",
+    "ROLE_IT_AUDITOR",
+    "ROLE_NETWORK_ADMIN",
+    "ROLE_NETWORK_ENGINEER"
+];    
 const navItems = [
-    { path: "/dashboard", label: "Dashboard" },
-    { path: "/devices", label: "Devices" },
-    { path: "/licenses", label: "License Management" },
+    { path: "/dashboard", label: "Dashboard", allowedRole: ALL_AUTHENTICATED_ROLES },
+    { path: "/devices", label: "Devices", allowedRole: ALL_AUTHENTICATED_ROLES },
+    { path: "/licenses", label: "Licenses", allowedRole: ALL_AUTHENTICATED_ROLES},
     { path: "/alerts", label: "Alerts" },
     { path: "/reports", label: "Reports" },
-    { path: "/users", label: "User Management" },
-    { path: "/auditlogs", label: "Audit Logs" },
-    { path: "/software", label: "Software" },
+    { path: "/users", label: "User Management", allowedRole: ["ROLE_ADMIN"] },
+    { path: "/auditlogs", label: "Audit Logs" , allowedRole: ["ROLE_ADMIN", "ROLE_IT_AUDITOR"]},
+    { path: "/software", label: "Software", allowedRole: ["ROLE_ADMIN", 'ROLE_NETWORK_ADMIN', 'ROLE_NETWORK_ENGINEER', 'ROLE_PROCUREMENT_OFFICER'] },
     { path: "/vendors", label: "Vendors" },
-    { path: "/ai", label: "AI Chatbot" }
+    { path: "/ai", label: "AI Chatbot", allowedRole: ["ROLE_ADMIN", "ROLE_PROCUREMENT_LEAD", "ROLE_PRODUCT_OWNER"] }
 ];
 
 const TopNavbar = () => {
     const location = useLocation();
     const { isAuthenticated, userRole, logout } = useAuth(); 
-
-    const PRIMARY_COLOR = '#343A40';
-    const ACTIVE_COLOR = '#83B366';
 
     const isActive = (path) => {
         if (path === "/dashboard") {
@@ -33,39 +49,67 @@ const TopNavbar = () => {
     return (
         <Navbar
             expand="lg"
-            className="shadow-sm"
-            style={{ backgroundColor: PRIMARY_COLOR }}
-            variant="dark"
+            className="shadow-sm border-bottom"
+            style={{ backgroundColor: PRIMARY_COLOR, borderColor: BORDER_COLOR, borderBottomWidth: '1px' }} 
+            variant="light" 
         >
             <Container fluid>
                 <Navbar.Brand
                     as={Link}
                     to="/dashboard"
-                    style={{ color: 'white', fontWeight: 'bold' }}
+                    style={{ fontWeight: '900', fontSize: '1.4rem' }}
                 >
-                    License Tracker
+                    <span>🫧</span>
                 </Navbar.Brand>
-
                 <Navbar.Toggle aria-controls="main-navbar-nav" />
-
                 <Navbar.Collapse id="main-navbar-nav">
-                    {/* 💡 FIX: ALWAYS RENDER NAVIGATION LINKS, regardless of authentication state */}
                     <Nav className="me-auto">
-                        {navItems.map((item) => ( 
-                            <Nav.Link
-                                key={item.path}
-                                as={Link}
-                                to={item.path}
-                                className={`text-white p-2 p-lg-3 ${isActive(item.path) ? 'fw-bold border-bottom border-4' : ''}`}
+                        {navItems.map((item) => {
+                            const active = isActive(item.path);
+                            return (
+                                <Nav.Link
+                                    key={item.path}
+                                    as={Link}
+                                    to={item.path}
+                                    className={`p-2 p-lg-3 mx-1 transition duration-300 ${active ? 'fw-bold rounded' : ''}`}
+                                    style={{
+                                        color: active ? ACCENT_COLOR : TEXT_COLOR, 
+                                        backgroundColor: active ? HOVER_COLOR : 'transparent',
+                                        borderRadius: '6px', 
+                                        transition: 'background-color 0.3s',
+                                    }}
+                                >
+                                    {item.label}
+                                </Nav.Link>
+                            );
+                        })}
+                    </Nav>
+
+                    <Nav className="d-flex align-items-center gap-3">
+                        {isAuthenticated && (
+                            <div
                                 style={{
-                                    borderBottomColor: isActive(item.path) ? ACTIVE_COLOR : 'transparent',
+                                    backgroundColor: ACCENT_COLOR, 
+                                    color: PRIMARY_COLOR,          
+                                    padding: '5px 12px',
+                                    borderRadius: '20px', 
+                                    fontWeight: 'bold',
+                                    fontSize: '0.9rem',
                                 }}
                             >
-                                {item.icon} {item.label}
-                            </Nav.Link>
-                        ))}
+                                {userRole.replace('ROLE_', '')}
+                            </div>
+                        )}
+                        <Button 
+                            variant="outline-dark" 
+                            onClick={logout}
+                            as={Link}
+                            to="/auth"
+                            style={{ borderColor: ACCENT_COLOR, color: ACCENT_COLOR }}
+                        >
+                            Logout
+                        </Button>
                     </Nav>
-\
                 </Navbar.Collapse>
             </Container>
         </Navbar>

@@ -32,7 +32,6 @@ export const deviceService = {
     getAllDevices: () => api.get('/devices'),
     updateDevice: (deviceId, data) => api.put(`/devices/${deviceId}`, data),
     deleteDevice: (deviceId) => api.delete(`/devices/${deviceId}`),
-    updateDeviceStatus: (deviceId, status) => api.put(`/devices/${deviceId}/status`, null, { params: { status } }),
     searchDevices: (ipAddress, location) => api.get(`/devices/search`, {params: { ipAddress, location },}),
     getAllLocations: () => api.get('/devices/locations'),
     getAllIpAddresses: () => api.get('/devices/ipaddresses'),
@@ -56,7 +55,6 @@ export const vendorService = {
     deleteVendor: (id) => api.delete(`/vendors/${id}`), 
 };
 export const softwareService = {
-    
     getAllSoftware: () => api.get("/software"),
     addSoftware: (data) => api.post("/software", data),
     updateSoftware: (id, data) => api.put(`/software/${id}`, data),
@@ -103,15 +101,7 @@ export const roleService = {
 }
 
 export const aiService = {
-    getSummary: (sessionId, query, filters) => api.post('/ai/message', 
-        { 
-            query: query,
-            ...filters 
-        },
-        // { 
-        //     params: { sessionId }
-        // }
-    ),
+    getSummary: (sessionId, query) => api.post('/ai/message', { query: query,},{ params: { sessionId }}),
 
     sendMessage : (query) => api.post("/ai/message", query)
 };

@@ -1,16 +1,19 @@
 import React from "react";
 import TopNavbar from "./TopNavbar";
+import Footer from "./Footer";
 
 const Layout = ({ children }) => {
-  // We no longer need 'sidebarOpen' state or 'toggleSidebar' function
-  // since the sidebar is being removed.
-
   return (
-    // The main container is simplified. Topbar handles the navigation.
-    <div className="app-shell"> 
+    <div 
+      className="app-shell"
+      style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+    > 
       <TopNavbar /> 
-      {/* Main content starts directly below the Topbar, taking full width */}
-      <main className="main-content p-3 p-md-4">{children}</main>
+      <main className="main-content p-3 p-md-4" style={{ flexGrow: 1 }}>
+        {children}
+      </main>
+
+      <Footer />
     </div>
   );
 };

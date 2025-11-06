@@ -150,19 +150,19 @@ const LicenseManagement = () => {
                         onClick={() => openDevicesModal(l)}
                         style={{ fontSize: '0.9rem', padding: '8px 0', width: '33.33%', borderRadius: '0', backgroundColor: '#B2DCE2', borderColor: '#B2DCE2', color: 'black' }}
                     >
-                        🖥️ View
+                        View
                     </Button>
                     <Button 
                         onClick={() => openEditForm(l)}
                         style={{ fontSize: '0.9rem', padding: '8px 0', width: '33.33%', borderRadius: '0', backgroundColor: '#83B366', borderColor: '#83B366', color: 'white' }}
                     >
-                        ✏️ Edit
+                        Edit
                     </Button>
                     <Button 
                         onClick={() => handleDelete(l.licenseKey)}
                         style={{ fontSize: '0.9rem', padding: '8px 0', width: '33.33%', borderRadius: '0', backgroundColor: '#F3000E', borderColor: '#F3000E', color: 'white' }}
                     >
-                        🗑️ Delete
+                        Delete
                     </Button>
                 </div>
             </Card>
