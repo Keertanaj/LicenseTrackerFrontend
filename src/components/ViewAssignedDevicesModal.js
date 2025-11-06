@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Spinner, Alert, ListGroup, Card } from 'react-bootstrap';
-// Assuming you have 'assignmentService' which can fetch assignments by license key
 import { assignmentService } from '../services/api'; 
 
 const ViewAssignedDevicesModal = ({ licenseKey, softwareName, onClose }) => {
@@ -12,15 +11,7 @@ const ViewAssignedDevicesModal = ({ licenseKey, softwareName, onClose }) => {
         setLoading(true);
         setError(null);
         try {
-            // NOTE: You must implement a new API call in assignmentService:
-            // assignmentService.getAssignmentsByLicenseKey(licenseKey)
-            // This endpoint should return an array of device objects/details
-            // assigned to the given licenseKey.
             const res = await assignmentService.getAssignmentsByLicenseKey(licenseKey);
-            
-            // Assuming the API returns device details directly in res.data
-            // If your API returns assignment objects (which contain device IDs), 
-            // you might need an additional step here to fetch the full device details.
             setAssignedDevices(res.data || []); 
         } catch (err) {
             console.error("Failed to fetch assigned devices:", err);

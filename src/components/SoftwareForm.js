@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
-// import { softwareService } from "../services/api"; 
 
 const SOFTWARE_ACCENT_COLOR = '#D3A4EA';
 const PRIMARY_ACTION_COLOR = '#83B366';
@@ -14,11 +13,8 @@ const SoftwareStatus = {
     UNAVAILABLE: 'UNAVAILABLE'
 };
 
-// FIX APPLIED HERE: Renamed 'onHide' prop for the Modal to recognize it.
 const SoftwareForm = ({ software: existingSoftware, onHide, onSave }) => { 
     const isEdit = !!existingSoftware;
-    
-    // We can define onClose internally for cleaner usage, but we accept onHide as the prop name.
     const onClose = onHide; 
     
     const initialFormState = {
@@ -61,7 +57,7 @@ const SoftwareForm = ({ software: existingSoftware, onHide, onSave }) => {
     return (
         <Modal 
             show 
-            onHide={onHide} // <-- Critical: Passing the correct prop name to <Modal>
+            onHide={onHide} 
             centered
             size="lg" 
         >

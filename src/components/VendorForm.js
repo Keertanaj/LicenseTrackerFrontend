@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 
-const PRIMARY_ACTION_COLOR = '#EAD094'; // Green
-const DANGER_COLOR = '#F3000E';         // Red
+const PRIMARY_ACTION_COLOR = '#EAD094';
+const DANGER_COLOR = '#F3000E';         
 const TEXT_COLOR = '#000000';
 
-// Note the accentColor prop is received
 const VendorForm = ({ vendor: existingVendor, onHide, onSave, accentColor }) => { 
     const isEdit = !!existingVendor;
     const onClose = onHide; 
-    
-    // ... (State and useEffect logic remain the same) ...
+
     const initialFormState = {
         vendorName: '',
         supportEmail: '',
@@ -37,10 +35,9 @@ const VendorForm = ({ vendor: existingVendor, onHide, onSave, accentColor }) => 
         e.preventDefault();
         onSave(form);
     };
-    
-    // Input style uses the dynamically passed accent color
+   
     const inputStyle = {
-        borderColor: accentColor || '#D3A4EA', // Fallback to purple if prop isn't passed
+        borderColor: accentColor || '#D3A4EA', 
         padding: '0.75rem 1rem',
     };
     
@@ -53,7 +50,7 @@ const VendorForm = ({ vendor: existingVendor, onHide, onSave, accentColor }) => 
         >
             <Modal.Header 
                 style={{ 
-                    backgroundColor: accentColor || '#D3A4EA', // Modal Header uses the accent color
+                    backgroundColor: accentColor || '#D3A4EA', 
                     color: 'white', 
                     borderBottom: 'none', 
                     padding: '1rem 1.5rem'
