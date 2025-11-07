@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {Row,Col,Table,Button,Spinner,Alert,Breadcrumb,Form,Card,Dropdown} from "react-bootstrap";
-import LicenseForm from "./LicenseForm";
+import LicenseForm from "../components/LicenseForm";
 import ViewAssignedDevicesModal from '../components/ViewAssignedDevicesModal'; // Import the new modal
 import { licenseService, vendorService } from "../services/api";
 

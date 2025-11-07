@@ -4,7 +4,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 const PRIMARY_COLOR = '#070707ff'; 
 const ACCENT_COLOR = '#ffffffff';  
 const TEXT_COLOR = '#ffffffff';   
-const BORDER_COLOR = '#212529';
+//const BORDER_COLOR = '#212529';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();

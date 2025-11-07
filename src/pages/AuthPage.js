@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap"; 
 import { authService } from "../services/api"; 
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../components/AuthContext"; 
 
 const AuthPage = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -13,7 +14,8 @@ const AuthPage = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
+  const { login } = useAuth(); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,16 +39,26 @@ const AuthPage = () => {
         const res = await authService.login(loginData); 
         
         const { token, role } = res.data;
-      
-        localStorage.setItem("token", token);
-
-        if (role == "ROLE_ADMIN"){
-          navigate("/dashboard");
-        } else if (role == "ROLE_IT_AUDITOR"){
-          navigate("/reports")
-        }
+        
+        console.log("Login successful:", { token, role });
+        login(token, role);
+        
+        if (role === "ROLE_ADMIN") {
+                navigate("/dashboard");
+            } else if (role === "ROLE_IT_AUDITOR") {
+                navigate("/auditlogs"); 
+            } else if (role === "ROLE_PROCUREMENT_OFFICER" || role === "ROLE_PROCUREMENT_LEAD") {
+                navigate("/licenses"); 
+            } else if (role === "ROLE_NETWORK_ADMIN" || role === "ROLE_OPERATIONS_MANAGER" || role === "ROLE_NETWORK_ENGINEER") {
+                navigate("/devices");
+            } else if (role === "ROLE_COMPLIANCE_OFFICER" || role === "ROLE_COMPLIANCE_LEAD") {
+                navigate("/reports");
+            } else {
+                navigate("/dashboard");
+            }
         
       } catch (err) {
+        console.error("Login error:", err); // Debug log
         const errorMessage = err.response?.data?.message || err.response?.data || "Login failed";
         setError(errorMessage);
       } finally {
@@ -102,7 +114,7 @@ const AuthPage = () => {
                   value={formData.username}
                   onChange={handleChange}
                   required
-                  style={{ backgroundColor: 'white', color: '#404E3B' }} // White Input
+                  style={{ backgroundColor: 'white', color: '#404E3B' }}
                 />
               </Form.Group>
             )}
@@ -117,7 +129,7 @@ const AuthPage = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                style={{ backgroundColor: 'white', color: '#404E3B' }} // White Input
+                style={{ backgroundColor: 'white', color: '#404E3B' }}
               />
             </Form.Group>
             
@@ -131,7 +143,7 @@ const AuthPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                style={{ backgroundColor: 'white', color: '#404E3B' }} // White Input
+                style={{ backgroundColor: 'white', color: '#404E3B' }}
               />
             </Form.Group>
 
@@ -144,7 +156,7 @@ const AuthPage = () => {
                   placeholder="Enter mobile number"
                   value={formData.mobile}
                   onChange={handleChange}
-                  style={{ backgroundColor: 'white', color: '#404E3B' }} // White Input
+                  style={{ backgroundColor: 'white', color: '#404E3B' }}
                 />
               </Form.Group>
             )}
@@ -154,7 +166,7 @@ const AuthPage = () => {
                 type="submit" 
                 disabled={loading} 
                 className="fw-bold"
-                style={{ backgroundColor: '#7B9669', borderColor: '#7B9669', color: 'white' }} // Theme Primary Button
+                style={{ backgroundColor: '#7B9669', borderColor: '#7B9669', color: 'white' }}
               >
                 {loading ? (
                   <>
@@ -176,14 +188,14 @@ const AuthPage = () => {
                   variant="link" 
                   onClick={toggleMode} 
                   className="p-0 ms-1 fw-bold text-decoration-underline"
-                  style={{ color: '#404E3B' }} // Theme Dark Text for link
+                  style={{ color: '#404E3B' }}
                 >
                   {isLoginMode ? "Sign Up" : "Login"}
                 </Button>
             </p>
             {isLoginMode && (
                 <p className="mt-2 mb-0">
-                    <Link href="/forgot" className="text-decoration-underline" style={{ color: '#404E3B' }}>Forgot Password?</Link>
+                    <Link to="/forgot" className="text-decoration-underline" style={{ color: '#404E3B' }}>Forgot Password?</Link>
                 </p>
             )}
         </Card.Footer>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Card, Table, Spinner, Alert } from "react-bootstrap";
-import DashboardCard from "./DashboardCard"; 
+import DashboardCard from "../components/DashboardCard"; 
 import { dashboardService } from "../services/api"; 
 
 const Dashboard = () => {

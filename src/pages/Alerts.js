@@ -14,7 +14,7 @@ import {
 } from "react-bootstrap";
 
 import { alertService } from "../services/api"; 
-import RenewalModal from "./RenewalModal"; 
+import RenewalModal from "../components/RenewalModal"; 
 
 const getExpirationStatus = (validTo) => {
     const today = new Date();

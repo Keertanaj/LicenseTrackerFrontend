@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Row, Col, Table, Button, Dropdown, Spinner, Alert, Breadcrumb, Card, Form, Pagination } from 'react-bootstrap';
-import DeviceForm from './DeviceForm';
+import DeviceForm from '../components/DeviceForm';
 import { deviceService } from '../services/api';
 import AssignLicenseModal from '../components/AssignLicenseModal'; 
 import ViewSoftwareModal from '../components/ViewSoftwareModal'; // 💡 IMPORTED NEW MODAL
