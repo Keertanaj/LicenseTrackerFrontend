@@ -8,31 +8,26 @@ const ACCENT_COLOR = '#171717ff';
 const HOVER_COLOR = '#f0f0f0';        
 const TEXT_COLOR = '#333333';        
 const BORDER_COLOR = '#212529';  
-const ALL_AUTHENTICATED_ROLES = [
-    "ROLE_USER",
-    "ROLE_ADMIN",
-    "ROLE_SECURITY_HEAD",
-    "ROLE_PRODUCT_OWNER",
-    "ROLE_COMPLIANCE_LEAD",
-    "ROLE_COMPLIANCE_OFFICER",
-    "ROLE_PROCUREMENT_LEAD",
-    "ROLE_PROCUREMENT_OFFICER",
-    "ROLE_OPERATIONS_MANAGER",
-    "ROLE_IT_AUDITOR",
-    "ROLE_NETWORK_ADMIN",
-    "ROLE_NETWORK_ENGINEER"
-];    
-const navItems = [
-    { path: "/dashboard", label: "Dashboard", allowedRole: ALL_AUTHENTICATED_ROLES },
-    { path: "/devices", label: "Devices", allowedRole: ALL_AUTHENTICATED_ROLES },
-    { path: "/licenses", label: "Licenses", allowedRole: ALL_AUTHENTICATED_ROLES},
-    { path: "/alerts", label: "Alerts" },
-    { path: "/reports", label: "Reports" },
-    { path: "/users", label: "User Management", allowedRole: ["ROLE_ADMIN"] },
-    { path: "/auditlogs", label: "Audit Logs" , allowedRole: ["ROLE_ADMIN", "ROLE_IT_AUDITOR"]},
-    { path: "/software", label: "Software", allowedRole: ["ROLE_ADMIN", 'ROLE_NETWORK_ADMIN', 'ROLE_NETWORK_ENGINEER', 'ROLE_PROCUREMENT_OFFICER'] },
-    { path: "/vendors", label: "Vendors" },
-    { path: "/ai", label: "AI Chatbot", allowedRole: ["ROLE_ADMIN", "ROLE_PROCUREMENT_LEAD", "ROLE_PRODUCT_OWNER"] }
+;const navItems = [
+    { path: "/dashboard", label: "Dashboard", allowedRole: ["ROLE_ADMIN", "ROLE_COMPLIANCE_OFFICER", "ROLE_COMPLIANCE_LEAD", "ROLE_PRODUCT_OWNER"] },
+
+    { path: "/devices", label: "Devices", allowedRole: ["ROLE_ADMIN", "ROLE_NETWORK_ADMIN", "ROLE_OPERATIONS_MANAGER", "ROLE_NETWORK_ENGINEER"] },
+
+    { path: "/licenses", label: "Licenses", allowedRole: ["ROLE_ADMIN", "ROLE_NETWORK_ADMIN", "ROLE_PROCUREMENT_OFFICER"] },
+
+    { path: "/alerts", label: "Alerts", allowedRole: ["ROLE_ADMIN", "ROLE_NETWORK_ADMIN", "ROLE_PROCUREMENT_OFFICER", "ROLE_COMPLIANCE_OFFICER", "ROLE_OPERATIONS_MANAGER"] },
+
+    { path: "/reports", label: "Reports", allowedRole: ["ROLE_ADMIN", "ROLE_PROCUREMENT_OFFICER", "ROLE_COMPLIANCE_OFFICER", "ROLE_IT_AUDITOR", "ROLE_SECURITY_HEAD", "ROLE_COMPLIANCE_LEAD", "ROLE_PROCUREMENT_LEAD"] },
+
+    { path: "/users", label: "User Management", allowedRole: ["ROLE_ADMIN", "ROLE_SECURITY_HEAD"] },
+
+    { path: "/auditlogs", label: "Audit Logs", allowedRole: ["ROLE_ADMIN", "ROLE_IT_AUDITOR", "ROLE_SECURITY_HEAD"] },
+
+    { path: "/software", label: "Software", allowedRole: ["ROLE_ADMIN", "ROLE_OPERATIONS_MANAGER", "ROLE_NETWORK_ENGINEER"] },
+
+    { path: "/vendors", label: "Vendors", allowedRole: ["ROLE_ADMIN", "ROLE_PROCUREMENT_OFFICER", "ROLE_PROCUREMENT_LEAD"] },
+
+    { path: "/ai", label: "AI Chatbot", allowedRole: ["ROLE_ADMIN", "ROLE_COMPLIANCE_OFFICER", "ROLE_IT_AUDITOR", "ROLE_COMPLIANCE_LEAD", "ROLE_PROCUREMENT_LEAD", "ROLE_PRODUCT_OWNER"] }
 ];
 
 const TopNavbar = () => {

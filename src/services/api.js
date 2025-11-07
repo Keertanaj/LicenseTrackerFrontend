@@ -91,6 +91,7 @@ export const userService = {
     getUsers: () => api.get('/users'),
     createUser: (data) => api.post('/users', data),
     assignRole: (userId, data) => api.put(`/users/${userId}/role`, data),
+    updateRole: (userId, data) => api.put(`/users/${userId}`, data),
     deleteUser: (userId) => api.delete(`/users/${userId}`) 
 };
 
